@@ -1,6 +1,5 @@
 <?php
-require "base.php";
-global $BASE;
+$BASE = dirname(__FILE__) . '/..';
 require_once "$BASE/conf/request.php";
 
 function get_hash_from_ip_info($server) {

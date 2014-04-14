@@ -7,8 +7,11 @@ if (AuthHandler::auth()) {
     exit();
 }
 
+$errors = false;
 $formToken = get_hash_from_ip_info($_SERVER);
-$errors = unserialize($_GET['errors']);
+if (isset($_GET['errors'])) {
+    $errors = unserialize($_GET['errors']);
+}
 
 ?>
 <html>

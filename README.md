@@ -36,5 +36,6 @@ Application
 Unit Test
 =========
 
-1. on user
-2. on department
+0. install PHPUnit
+1. test class on user
+2. test class on department
