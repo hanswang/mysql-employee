@@ -9,9 +9,11 @@ class AuthHandler {
     public function __construct () {
     }
 
-    static public function login ($name, $passwd) {
+    static public function login ($name, $passwd, $use_session = true) {
         $dbh = SafePDO::connect();
-        session_start();
+        if ($use_session) {
+            session_start();
+        }
 
         $sth = $dbh->prepare('SELECT * FROM login WHERE username = :name');
         $sth->execute(array(':name' => $name));
@@ -24,14 +26,16 @@ class AuthHandler {
 
             if (strcmp($row['passwd'], $hashedPw) === 0) {
                 $loginId = $row['id'];
-                session_regenerate_id(true);
-                $_SESSION['login_id'] = $loginId;
-                $_SESSION['role'] = $row['role_id'];
-                $_SESSION['pw_changed'] = $row['first_changed'];
-                $_SESSION['username'] = $row['username'];
-                $_SESSION['lastactive'] = time();
-                if ($row['emp_no'] != null) {
-                    $_SESSION['emp_no'] = $row['emp_no'];
+                if ($use_session) {
+                    session_regenerate_id(true);
+                    $_SESSION['login_id'] = $loginId;
+                    $_SESSION['role'] = $row['role_id'];
+                    $_SESSION['pw_changed'] = $row['first_changed'];
+                    $_SESSION['username'] = $row['username'];
+                    $_SESSION['lastactive'] = time();
+                    if ($row['emp_no'] != null) {
+                        $_SESSION['emp_no'] = $row['emp_no'];
+                    }
                 }
                 return true;
             } else {
@@ -67,13 +71,15 @@ class AuthHandler {
 
                 if (strcmp($passwd, $row['emp_no']) === 0) {
                     $loginId = $dbh->lastInsertId();
-                    session_regenerate_id(true);
-                    $_SESSION['login_id'] = $loginId;
-                    $_SESSION['emp_no'] = $row['emp_no'];
-                    $_SESSION['role'] = is_null($row['dept_no']) ? '1' : '2';
-                    $_SESSION['pw_changed'] = 'N';
-                    $_SESSION['username'] = $name;
-                    $_SESSION['lastactive'] = time();
+                    if ($use_session) {
+                        session_regenerate_id(true);
+                        $_SESSION['login_id'] = $loginId;
+                        $_SESSION['emp_no'] = $row['emp_no'];
+                        $_SESSION['role'] = is_null($row['dept_no']) ? '1' : '2';
+                        $_SESSION['pw_changed'] = 'N';
+                        $_SESSION['username'] = $name;
+                        $_SESSION['lastactive'] = time();
+                    }
                     return true;
                 } else {
                     $errors[] = htmlspecialchars("Password is not correct.");
@@ -86,20 +92,28 @@ class AuthHandler {
         }
     }
 
-    static public function updatePassword($passwd) {
+    static public function updatePassword($passwd, $use_session = true, $unittest_id = false) {
         $dbh = SafePDO::connect();
 
         $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
         $saltedPw = get_salt_hashed_passed($passwd, $salt);
 
         $sth = $dbh->prepare('UPDATE login SET passwd = :passwd, salt = :salt, first_changed = :first_changed WHERE emp_no = :id');
+
+        if ($use_session == false && $unittest_id != false) {
+            $employee_id = $unittest_id;
+        } else {
+            $employee_id = $_SESSION['emp_no'];
+        }
         $data = array(':passwd' => $saltedPw,
             ':first_changed' => 'Y',
             ':salt' => $salt,
-            ':id' => $_SESSION['emp_no']);
+            ':id' => $employee_id);
         $sth->execute($data);
-        unset($_SESSION['pw_changed']);
-        $_SESSION['pw_changed'] = 'Y';
+        if ($use_session) {
+            unset($_SESSION['pw_changed']);
+            $_SESSION['pw_changed'] = 'Y';
+        }
     }
 
     static public function auth() {
