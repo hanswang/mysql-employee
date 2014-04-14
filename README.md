@@ -39,3 +39,17 @@ Unit Test
 0. install PHPUnit
 1. test class on user
 2. test class on department
+
+
+Entry Point
+===========
+
+
+- [login](http://www.hanswang.info/mysql-employee/login.php)
+- [change password](http://www.hanswang.info/mysql-employee/change-password.php)
+- [view user](http://www.hanswang.info/mysql-employee/view-user.php)
+- [view department](http://www.hanswang.info/mysql-employee/view-department.php)
+- [view all](http://www.hanswang.info/mysql-employee/view-all.php)
+- [view search filter](http://www.hanswang.info/mysql-employee/view-search.php)
+
+
