@@ -1,8 +1,6 @@
 <?php
 
-require "base.php";
-global $BASE;
-
+$BASE = dirname(__FILE__) . '/..';
 require_once "$BASE/classes/DepartmentDAO.php";
 
 class Department {

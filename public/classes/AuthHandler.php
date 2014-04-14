@@ -1,11 +1,8 @@
 <?php
 
-require "base.php";
-global $BASE;
-
+$BASE = dirname(__FILE__) . '/..';
 require_once "$BASE/lib/functions.php";
 require_once "$BASE/lib/common.php";
-global $dbh;
 
 class AuthHandler {
 
@@ -13,7 +10,7 @@ class AuthHandler {
     }
 
     static public function login ($name, $passwd) {
-        global $dbh;
+        $dbh = SafePDO::connect();
         session_start();
 
         $sth = $dbh->prepare('SELECT * FROM login WHERE username = :name');
@@ -90,7 +87,7 @@ class AuthHandler {
     }
 
     static public function updatePassword($passwd) {
-        global $dbh;
+        $dbh = SafePDO::connect();
 
         $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
         $saltedPw = get_salt_hashed_passed($passwd, $salt);

@@ -1,15 +1,13 @@
 <?php
 
-require "base.php";
-global $BASE;
+$BASE = dirname(__FILE__) . '/..';
 require_once "$BASE/lib/functions.php";
 require_once "$BASE/lib/common.php";
-global $dbh;
 
 class DepartmentDAO {
 
     static public function loadDepartmentByManagerId ($id) {
-        global $dbh;
+        $dbh = SafePDO::connect();
         $sth = $dbh->prepare('
             SELECT d.dept_no, d.dept_name, dm.emp_no, dm.from_date, dm.to_date,
                 COUNT(DISTINCT de.emp_no) AS employee_count
@@ -25,7 +23,7 @@ class DepartmentDAO {
     }
 
     static public function loadDepartmentUsersByDeptNo ($dept_no, $offset = 0, $limit = 100) {
-        global $dbh;
+        $dbh = SafePDO::connect();
         $sth = $dbh->prepare('
             SELECT e.emp_no, e.first_name, e.last_name, e.gender, e.hire_date, t.title
             FROM employees e
@@ -47,7 +45,7 @@ class DepartmentDAO {
     }
 
     static public function getAllCount () {
-        global $dbh;
+        $dbh = SafePDO::connect();
         $sth = $dbh->prepare('
             SELECT COUNT(DISTINCT(emp_no)) AS all_count FROM employees
             ');
@@ -58,7 +56,7 @@ class DepartmentDAO {
     }
 
     static public function loadAllUsers ($offset = 0, $limit = 100) {
-        global $dbh;
+        $dbh = SafePDO::connect();
         $sth = $dbh->prepare('
             SELECT e.emp_no, e.first_name, e.last_name, e.gender, e.hire_date, t.title
             FROM employees e
@@ -77,7 +75,7 @@ class DepartmentDAO {
     }
 
     static public function loadCountByFilteredQuery ($query, $binds) {
-        global $dbh;
+        $dbh = SafePDO::connect();
         $combined_query = '
             SELECT COUNT(DISTINCT(e.emp_no)) AS count FROM employees e' . $query;
         $sth = $dbh->prepare($combined_query);
@@ -89,7 +87,7 @@ class DepartmentDAO {
 
     static public function loadEmployeesByFilteredQuery ($query, $binds, $offset = 0, $limit = 100) {
 
-        global $dbh;
+        $dbh = SafePDO::connect();
         $combined_query = '
             SELECT e.emp_no, e.first_name, e.last_name, e.gender, e.hire_date, t.title
             FROM employees e' . $query .
