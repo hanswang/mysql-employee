@@ -154,7 +154,9 @@ class SearchFilterView extends DepartmentView {
             .' LEFT JOIN titles t2 ON t.emp_no = t2.emp_no AND t2.to_date > t.to_date
             WHERE t2.title IS NULL '
             .(($this->department != false) ? ' AND de.dept_no = :dept_no ' : '');
-        $binds[':dept_no'] = $this->department->dept_id;
+        if ($this->department != false) {
+            $binds[':dept_no'] = $this->department->dept_id;
+        }
 
         if ($this->by_firstname) {
             $sql .= ' AND e.first_name like :search_fn ';
