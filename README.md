@@ -1,7 +1,8 @@
 DB config
 =========
 
-db-changes/
+**db-changes/**
+
 1. setup.sql -- create user for downloaded db & application
 2. login.sql -- create login table for user login
 3. new-admin.sql -- create admin user
@@ -11,18 +12,21 @@ db-changes/
 Application
 ===========
 
-classes/
-1. User (DAO)
-    a). normal employee
-    b). manager
-    c). admin
-2. Department (DAO)
-    a). employee list
-    b). manager ownership
-    c). filtering
-3. Auth handler (DAO + DTO)
+**classes/**
 
-views
+- User (DAO)
+    - normal employee
+    - manager
+    - admin
+- Department (DAO)
+    - employee list
+    - manager ownership
+    - filtering
+- Auth handler (DAO + DTO)
+
+
+**views**
+
 1. login view
 2. change password view
 3. single user view
